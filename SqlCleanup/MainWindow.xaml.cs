@@ -30,8 +30,8 @@ FROM Table1 INNER JOIN Table2 T2 ON T2.Id = Table1.Id
 WHERE T2.Id < 300 AND Table1.Id > 10 AND Table1.Name LIKE '%Svensson' 
 ORDER BY T2.Id";
 
-            var p = new SqlTokenizer(x => new Lexer(x));
-            var result = p.Process(testQuery2);
+            var p = new SqlLexer();
+            var result = p.Tokenize(testQuery2);
 
             Console.WriteLine("Antal = " + result.Length);
         }
