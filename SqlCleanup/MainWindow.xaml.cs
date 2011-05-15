@@ -31,9 +31,12 @@ WHERE T2.Id < 300 AND Table1.Id > 10 AND Table1.Name LIKE '%Svensson'
 ORDER BY T2.Id";
 
             var p = new SqlLexer();
-            var result = p.Tokenize(testQuery2);
+            //var result = p.Tokenize(testQuery2);
 
-            Console.WriteLine("Antal = " + result.Length);
+            //Console.WriteLine("Antal = " + result.Length);
+
+            var parser = new SqlParser(p);
+            var result1 = parser.Parse(testQuery1);
         }
     }
 }

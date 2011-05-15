@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SqlCleanup.Parser
@@ -7,11 +6,11 @@ namespace SqlCleanup.Parser
     public class SqlLexer
     {
         public static char[] WhiteSpace = { ' ', '\t', '\n', '\r' };
-        public static char[] SpecialCharacters = { '*', '?', '+', '-', '*', '/', '%' };
+        public static char[] SpecialCharacters = { '*', '?', '+', '-', '*', '/', '%', ';' };
         public static char StartParenthesis = '(';
         public static char EndParenthesis = ')';
-        public static char StartSquareBracket = '[';
-        public static char EndSquareBracket = ']';
+        public static char[] StartIdentifierDelimiter = { '[', '"' };
+        public static char[] EndIdentifierDelimiter = { ']', '"' };
         public static char StringLitteralStart = '\'';
         public static char StringLitteralEnd = '\'';
         public static char StringLitteralEscape = '\\';
@@ -21,8 +20,9 @@ namespace SqlCleanup.Parser
         public static char DecimalPoint = '.';
         public static char SepparatorPoint = '.';
         public static char Comma = ',';
-        public static char StartVariable = '@';
+        public static char[] StartVariable = { '@', '#', '_' };
         public static char[] EndOfLine = { '\r', '\n' };
+        public static char[] EndOfQuery = { ';' };
 
         private class LexerIndex
         {
@@ -104,6 +104,8 @@ namespace SqlCleanup.Parser
                         tokens.Add(ReadCommentRestOfLine(index));
                     else if (index.Current == CommentStart[0] && index.Current == CommentStart[1])
                         tokens.Add(ReadComment(index));
+                    else if (IsEndOfQuery(index.Current))
+                        tokens.Add(CreateSingelCharacterToken(index, TokenType.EndOfQuery));
                     else
                         tokens.Add(CreateSingelCharacterToken(index, TokenType.SpecialCharacter));
                 }
@@ -111,7 +113,7 @@ namespace SqlCleanup.Parser
                 {
                     tokens.Add(ReadNumber(index));
                 }
-                else if (index.Current == StartVariable)
+                else if (IsStartVariable(index.Current))
                 {
                     tokens.Add(ReadVariable(index));
                 }
@@ -127,13 +129,13 @@ namespace SqlCleanup.Parser
                 {
                     tokens.Add(CreateSingelCharacterToken(index, TokenType.EndParenthesis));
                 }
-                else if (index.Current == StartSquareBracket)
+                else if (IsStartIdentifierDelimiter(index.Current))
                 {
-                    tokens.Add(CreateSingelCharacterToken(index, TokenType.StartSquareBracket));
+                    tokens.Add(CreateSingelCharacterToken(index, TokenType.StartIdentifierDelimiter));
                 }
-                else if (index.Current == EndSquareBracket)
+                else if (IsEndIdentifierDelimiter(index.Current))
                 {
-                    tokens.Add(CreateSingelCharacterToken(index, TokenType.EndSquareBracket));
+                    tokens.Add(CreateSingelCharacterToken(index, TokenType.EndIdentifierDelimiter));
                 }
                 else if (index.Current == SepparatorPoint)
                 {
@@ -231,7 +233,7 @@ namespace SqlCleanup.Parser
 
             var start = index.Index;
 
-            while (IsLetterOrDigit(index.Peek))
+            while (IsLetterOrDigit(index.Peek) || IsStartVariable(index.Peek))
             {
                 index.Next();
             }
@@ -268,7 +270,7 @@ namespace SqlCleanup.Parser
 
         private bool IsWhiteSpace(char? c)
         {
-            return c.HasValue && WhiteSpace.Contains(c.Value);
+            return c.HasValue && (WhiteSpace.Contains(c.Value) || EndOfLine.Contains(c.Value));
         }
 
         private bool IsSpecialCharacter(char? c)
@@ -289,6 +291,26 @@ namespace SqlCleanup.Parser
         private bool IsLetterOrDigit(char? c)
         {
             return c.HasValue && (IsLetter(c) || IsDigit(c));
+        }
+
+        private bool IsStartVariable(char? c)
+        {
+            return c.HasValue && StartVariable.Contains(c.Value);
+        }
+
+        private bool IsStartIdentifierDelimiter(char? c)
+        {
+            return c.HasValue && StartIdentifierDelimiter.Contains(c.Value);
+        }
+
+        private bool IsEndIdentifierDelimiter(char? c)
+        {
+            return c.HasValue && EndIdentifierDelimiter.Contains(c.Value);
+        }
+
+        private bool IsEndOfQuery(char? c)
+        {
+            return c.HasValue && EndOfQuery.Contains(c.Value);
         }
     }
 }

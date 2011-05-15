@@ -69,9 +69,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parser\Lexer.cs" />
-    <Compile Include="Parser\Parser.cs" />
-    <Compile Include="Parser\Query.cs" />
+    <Compile Include="Parser\SqlFormatter.cs" />
+    <Compile Include="Parser\SqlLexer.cs" />
+    <Compile Include="Parser\SqlParser.cs" />
+    <Compile Include="Parser\Token.cs" />
     <Compile Include="Parser\SubArray.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
