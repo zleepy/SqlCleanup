@@ -69,9 +69,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parser\Expression.cs" />
     <Compile Include="Parser\Lexer.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Query.cs" />
+    <Compile Include="Parser\sql1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -89,6 +91,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Parser\sql1.peg" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

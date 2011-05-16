@@ -24,16 +24,23 @@ namespace SqlCleanup
         {
             InitializeComponent();
 
-            var testQuery1 = @"SELECT * FROM Test WHERE (Col = 1)";
+            var testQuery1 = @"SELECT COUNT(1) AS Col1, Table1.Column1 AS Col2";
             var testQuery2 = @"SELECT Table1.Column1, Table2.Column2
 FROM Table1 INNER JOIN Table2 T2 ON T2.Id = Table1.Id
 WHERE T2.Id < 300 AND Table1.Id > 10 AND Table1.Name LIKE '%Svensson' 
 ORDER BY T2.Id";
 
-            var p = new SqlTokenizer(x => new Lexer(x));
-            var result = p.Process(testQuery2);
+            var test3 = "server.[Databas 1].dbo.[Id Column 2]";
 
-            Console.WriteLine("Antal = " + result.Length);
+            //var p = new SqlTokenizer(x => new Lexer(x));
+            //var result = p.Process(testQuery2);
+
+            var parser = new sql1();
+            var result = parser.Parse("SELECT COUNT(1) AS Col1, COUNT(1) Col3, Table1.Column1 AS Col2, Table1.Column1");
+
+
+
+            Console.WriteLine("Antal = " + result.ToString());
         }
     }
 }
