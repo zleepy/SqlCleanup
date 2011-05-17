@@ -6,63 +6,63 @@ using SqlCleanup.Parser;
 
 internal sealed partial class sql1
 {
-    private ObjectExpression DoCreateObjectReference(List<Result> results)
-    {
-        switch (results.Count(x => x.Text == "."))
-        {
-            case 3:
-                // server.database.schema.col
-                // server..schema.col
-                // server.database..col
-                // server...col
-                {
-                    string database = results[2].Text == "." ? null : results[2].Text;
-                    int nextResultIndex = database == null ? 3 : 4;
-                    string schema = results[nextResultIndex].Text == "." ? null : results[nextResultIndex].Text;
-                    nextResultIndex = schema == null ? nextResultIndex + 1 : nextResultIndex + 2;
+    //private ObjectExpression DoCreateObjectReference(List<Result> results)
+    //{
+    //    switch (results.Count(x => x.Text == "."))
+    //    {
+    //        case 3:
+    //            // server.database.schema.col
+    //            // server..schema.col
+    //            // server.database..col
+    //            // server...col
+    //            {
+    //                string database = results[2].Text == "." ? null : results[2].Text;
+    //                int nextResultIndex = database == null ? 3 : 4;
+    //                string schema = results[nextResultIndex].Text == "." ? null : results[nextResultIndex].Text;
+    //                nextResultIndex = schema == null ? nextResultIndex + 1 : nextResultIndex + 2;
 
-                    return new ObjectExpression(results[0].Text, database, schema, results[nextResultIndex].Text);
-                }
+    //                return new ObjectExpression(results[0].Text, database, schema, results[nextResultIndex].Text);
+    //            }
 
-            case 2:
-                // database.schema.col
-                // database..col
+    //        case 2:
+    //            // database.schema.col
+    //            // database..col
 
-                {
-                    string schema = results[2].Text == "." ? null : results[2].Text;
-                    int nextResultIndex = schema == null ? 3 : 4;
+    //            {
+    //                string schema = results[2].Text == "." ? null : results[2].Text;
+    //                int nextResultIndex = schema == null ? 3 : 4;
 
-                    return new ObjectExpression(results[0].Text, schema, results[nextResultIndex].Text);
-                }
+    //                return new ObjectExpression(results[0].Text, schema, results[nextResultIndex].Text);
+    //            }
 
-            case 1:
-                // schema.col
-                return new ObjectExpression(results[0].Text, results[2].Text);
+    //        case 1:
+    //            // schema.col
+    //            return new ObjectExpression(results[0].Text, results[2].Text);
 
-            case 0:
-                // col
-                return new ObjectExpression(results[0].Text);
+    //        case 0:
+    //            // col
+    //            return new ObjectExpression(results[0].Text);
 
-            default:
-                throw new ArgumentException("Ogiltiga argument till DoCreateObjectReference.");
-        }
-    }
+    //        default:
+    //            throw new ArgumentException("Ogiltiga argument till DoCreateObjectReference.");
+    //    }
+    //}
 
-    private SelectExpression DoCreateSelect(List<Result> results)
-    {
-        return new SelectExpression(results.Where(r => r.Value is SelectStatementExpression).Select(r => (SelectStatementExpression)r.Value));
-    }
+    //private SelectExpression DoCreateSelect(List<Result> results)
+    //{
+    //    return new SelectExpression(results.Where(r => r.Value is SelectStatementExpression).Select(r => (SelectStatementExpression)r.Value));
+    //}
 
-    private SelectStatementExpression DoCreateSelectStatement(List<Result> results)
-    {
-        if (results.Count == 3)
-            return new SelectStatementExpression(results[0].Value ?? new Expression(results[0].Text), results[2].Value, results[1].Text.ToLower() == "as");
+    //private SelectStatementExpression DoCreateSelectStatement(List<Result> results)
+    //{
+    //    if (results.Count == 3)
+    //        return new SelectStatementExpression(results[0].Value ?? new Expression(results[0].Text), results[2].Value, results[1].Text.ToLower() == "as");
 
-        if (results.Count == 1)
-            return new SelectStatementExpression(results[0].Value ?? new Expression(results[0].Text));
+    //    if (results.Count == 1)
+    //        return new SelectStatementExpression(results[0].Value ?? new Expression(results[0].Text));
 
-        throw new ArgumentException("Borde inte komma hit!");
-    }
+    //    throw new ArgumentException("Borde inte komma hit!");
+    //}
 }
 
 namespace SqlCleanup.Parser

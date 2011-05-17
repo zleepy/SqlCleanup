@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SqlParser\Lexer.cs" />
+    <Compile Include="SqlParser\MatchingStartEndRule.cs" />
+    <Compile Include="SqlParser\Rule.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -70,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Parser\Expression.cs" />
+    <Compile Include="Parser\FuzzySqlParser.cs" />
     <Compile Include="Parser\Lexer.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Query.cs" />
@@ -91,6 +95,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Parser\FuzzySqlParser.peg" />
     <None Include="Parser\sql1.peg" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
