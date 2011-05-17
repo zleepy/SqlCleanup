@@ -1,0 +1,66 @@
+﻿# Simple grammer used to evaluate arithmetic expressions such as `3 + 4*5`.
+# EvaluateBinary is a custom method defined using a partial Parser class.
+start = Select
+value = Expression 
+ignore-case = true
+using = System.Linq SqlCleanup.Parser
+#Default
+#unconsumed = void 
+#unconsumed = error
+unconsumed = expose
+#unconsumed = ignore
+
+AggregateIdentifiers := "sum" / "max" / "min" / "count";
+Aggregate := AggregateIdentifiers S '(' S (WildcardReference / Expression) S ')';
+
+ReservedWords := ("sum" / "max" / "min" / "count" / "as" / "left" / "right" / "table" / "join" / "select" / "from" / "where") ![a-z0-9_];
+Space := [ \t\r\n]	`;` `expected = "whitespace"`
+S := Space*			`text = null`
+Digit := [0-9];
+Number := ('+' / '-')? Digit+												`value = new LitteralExpression(text, false)` `expected = "Litteral"`
+Number := ('+' / '-')? Digit+ '.' Digit+									`value = new LitteralExpression(text, false)` `expected = "Litteral"`
+Text := '\'' (!['])* '\''													`value = new LitteralExpression(text, true)` `expected = "Litteral"`
+Litteral := Number / Text;
+Letter := [a-z];
+Identifier := !ReservedWords Letter (Letter / Digit / '_')*					`value = new IdentifierExpression(text)` `expected = "Identifier"`
+Identifier := '[' Letter (Letter / Digit / ' ' / '_')* ']'					`value = new IdentifierExpression(text)` `expected = "Identifier"`
+
+#Comment := "--" ![\r\n]
+#Comment := "/*" !"*/"* "*/"
+
+ObjectReference := Identifier '.' Identifier? '.' Identifier? '.' Identifier `value = DoCreateObjectReference(results)` `expected = "ObjectReference"`
+ObjectReference := Identifier '.' Identifier? '.' Identifier				`value = DoCreateObjectReference(results)` `expected = "ObjectReference"`
+ObjectReference := Identifier '.' Identifier								`value = DoCreateObjectReference(results)` `expected = "ObjectReference"`
+ObjectReference := Identifier												`value = DoCreateObjectReference(results)` `expected = "ObjectReference"`
+
+WildcardReference := '*';
+WildcardReference := Identifier ".*";
+
+SubSelect := '(' S Select S ')';
+
+Expression := Litteral;
+Expression := Litteral S (('+' / '-' / '/' / '*') S (Aggregate / Litteral / ObjectReference / SubSelect))*;
+Expression := Aggregate;
+Expression := Aggregate S (('+' / '-' / '/' / '*') S (Aggregate / Litteral / ObjectReference / SubSelect))*;
+Expression := ObjectReference;
+Expression := ObjectReference S (('+' / '-' / '/' / '*') S (Aggregate / Litteral / ObjectReference / SubSelect))*;
+Expression := SubSelect;
+Expression := SubSelect S (('+' / '-' / '/' / '*') S (Aggregate / Litteral / ObjectReference / SubSelect))*;
+
+SelectStatement := S (WildcardReference / Expression) S "as" S Identifier	`value = DoCreateSelectStatement(results)` `expected = "SelectStatement"`
+SelectStatement := S (WildcardReference / Expression) Space+ Identifier		`value = DoCreateSelectStatement(results)` `expected = "SelectStatement"`
+SelectStatement := S (WildcardReference / Expression)						`value = DoCreateSelectStatement(results)` `expected = "SelectStatement"`
+
+Select := "select" S ("all" / "distinct")? SelectStatement? S (',' SelectStatement)*  `value = DoCreateSelect(results)` `expected = "ObjectReference"`
+#Where := "where" S;
+
+#And := S "and" S;
+#Or := S "or" S;
+
+#Expr := S Sum;
+#Sum := Product (('+' / '-') S Product)*  `if (results.Count > 0) value = EvaluateBinary(results)`
+#Product := Value (('*' / '/') S Value)*  `if (results.Count > 0) value = EvaluateBinary(results)`
+#Value := [0-9]+ S `value = Double.Parse(text.Trim())` `expected = "number"`
+#Value := '(' Expr ')' S `value = results[1].Value` `expected = "parenthesized expression"`
+#S := Space* `text = null`  # We use a separate space rule because x* always succeeds.
+#Space := [ \t\r\n] `;` `expected = "whitespace"`
