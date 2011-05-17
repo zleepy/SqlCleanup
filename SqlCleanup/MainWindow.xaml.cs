@@ -36,7 +36,7 @@ ORDER BY T2.Id";
             //var result = p.Process(testQuery2);
 
             var parser = new sql1();
-            var result = parser.Parse("SELECT COUNT(1) AS Col1, COUNT(1) Col3, Table1.Column1 AS Col2, Table1.Column1");
+            var result = parser.Parse("SELECT COUNT(1) AS Col1, COUNT(1) Col3, Table1.Column1 AS Col2, Table1.Column1 FROM Table1 T2");
 
 
 

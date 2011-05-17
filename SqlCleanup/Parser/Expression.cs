@@ -50,16 +50,19 @@ internal sealed partial class sql1
 
     private SelectExpression DoCreateSelect(List<Result> results)
     {
-        return new SelectExpression(results.Where(r => r.Value is SelectStatementExpression).Select(r => (SelectStatementExpression)r.Value));
+        bool isDistinct = (results.Count >= 2) ? (results[1].Text == "distinct") : false;
+        bool isAll = (results.Count >= 2) ? (results[1].Text == "all") : false;
+
+        return new SelectExpression(results.Where(r => r.Value is AliasStatementExpression).Select(r => (AliasStatementExpression)r.Value), isDistinct, isAll);
     }
 
-    private SelectStatementExpression DoCreateSelectStatement(List<Result> results)
+    private AliasStatementExpression DoCreateAliasStatement(List<Result> results)
     {
         if (results.Count == 3)
-            return new SelectStatementExpression(results[0].Value ?? new Expression(results[0].Text), results[2].Value, results[1].Text.ToLower() == "as");
+            return new AliasStatementExpression(results[0].Value ?? new Expression(results[0].Text), results[2].Value, results[1].Text.ToLower() == "as");
 
         if (results.Count == 1)
-            return new SelectStatementExpression(results[0].Value ?? new Expression(results[0].Text));
+            return new AliasStatementExpression(results[0].Value ?? new Expression(results[0].Text));
 
         throw new ArgumentException("Borde inte komma hit!");
     }
@@ -125,19 +128,19 @@ namespace SqlCleanup.Parser
         }
     }
 
-    class SelectStatementExpression : Expression
+    class AliasStatementExpression : Expression
     {
         public Expression Expression { get; set; }
         public bool IsAsDefined { get; set; }
         public Expression Identifier { get; set; }
 
-        public SelectStatementExpression(Expression expression)
+        public AliasStatementExpression(Expression expression)
             : base(expression.Text)
         {
             Expression = expression;
         }
 
-        public SelectStatementExpression(Expression expression, Expression identifier, bool isAsDefined)
+        public AliasStatementExpression(Expression expression, Expression identifier, bool isAsDefined)
             : base(expression.Text)
         {
             Expression = expression;
@@ -151,11 +154,13 @@ namespace SqlCleanup.Parser
         public bool IsDistinct { get; set; }
         public bool IsAll { get; set; }
 
-        public SelectStatementExpression[] Statements { get; set; }
+        public AliasStatementExpression[] Statements { get; set; }
 
-        public SelectExpression(IEnumerable<SelectStatementExpression> statements)
+        public SelectExpression(IEnumerable<AliasStatementExpression> statements, bool isDistinct, bool isAll)
         {
             Statements = statements.ToArray();
+            IsDistinct = isDistinct;
+            IsAll = isAll;
         }
     }
 
