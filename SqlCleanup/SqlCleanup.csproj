@@ -55,6 +55,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Parser\sql1.cs" />
+    <Compile Include="SqlParser\ExactMatchRult.cs" />
+    <Compile Include="SqlParser\Lexer.cs" />
+    <Compile Include="SqlParser\MatchingStartEndRule.cs" />
+    <Compile Include="SqlParser\NumberRule.cs" />
+    <Compile Include="SqlParser\Rule.cs" />
+    <Compile Include="SqlParser\State.cs" />
+    <Compile Include="SqlParser\Token.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -69,13 +77,13 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parser\sql1.cs" />
     <Compile Include="Parser\SqlFormatter.cs" />
     <Compile Include="Parser\SqlLexer.cs" />
     <Compile Include="Parser\SqlParser.cs" />
     <Compile Include="Parser\Token.cs" />
     <Compile Include="Parser\SubArray.cs" />
     <Compile Include="Parser\Expression.cs" />
+    <Compile Include="Parser\FuzzySqlParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -93,6 +101,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Parser\FuzzySqlParser.peg" />
     <None Include="Parser\sql1.peg" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -1,0 +1,27 @@
+﻿# En förenklad Sql-parser som inte är så noga med innehållet.
+
+start = Queries
+value = List<string>
+ignore-case = true
+using = System.Linq
+
+Space := [ \t\r\n];
+S := Space*			`text = null`
+
+QueryKeywords := ('select' / 'update' / 'insert' / 'delete' / 'declaration' / 'set') ![a-z0-9_];
+
+Queries := Select / Update / Insert / Delete / Declaration / Set `value = new List<string>(); value.AddRange(results.Select(r => r.Text));`
+
+SubSelect := '(' S Select S ')';
+
+Select := 'select' S (SubSelect / !QueryKeywords)*  `value = new List<string>(); value.Add(text);`
+
+Update := 'update' S .* !QueryKeywords `value = new List<string>(); value.Add(text);`
+
+Insert := 'insert' S .* !QueryKeywords `value = new List<string>(); value.Add(text);`
+
+Delete := 'delete' S .* !QueryKeywords `value = new List<string>(); value.Add(text);`
+
+Declaration := 'declare' S .* !QueryKeywords `value = new List<string>(); value.Add(text);`
+
+Set := 'set' S .* !QueryKeywords `value = new List<string>(); value.Add(text);`

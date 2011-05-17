@@ -35,9 +35,15 @@ ORDER BY T2.Id";
             //var p = new SqlTokenizer(x => new Lexer(x));
             //var result = p.Process(testQuery2);
 
-            var parser = new sql1();
-            var result = parser.Parse("SELECT COUNT(1) AS Col1, COUNT(1) Col3, Table1.Column1 AS Col2, Table1.Column1 FROM Table1 T2");
+            //var parser = new sql1();
+            //var result = parser.Parse("SELECT COUNT(1) AS Col1, COUNT(1) Col3, Table1.Column1 AS Col2, Table1.Column1 FROM Table1 T2");
 
+            //var parser = new FuzzySqlParser();
+            //var result = parser.Parse("SELECT COUNT(1) AS Col1, COUNT(1) Col3, Table1.Column1 AS Col2, Table1.Column1 , (SELECT * FROM SOMETHING) AS T INSERT INTO Table WHERE x = y");
+
+            var lexer = new SqlParser.Lexer("1234.123+456456");
+
+            var result = lexer.Tokenize();
 
 
             Console.WriteLine("Antal = " + result.ToString());
