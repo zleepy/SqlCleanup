@@ -46,14 +46,14 @@ namespace SqlCleanup.SqlParser
                     {
                         if (IsMatchingString(lexer, End))
                         {
-                            result = new State(startPos, lexer.Pos - startPos);
+                            result = new State(Type, startPos, lexer.Pos - startPos);
                             return true;
                         }
                     } while (lexer.Next());
 
                     // Det här är specialfall som uppstår om man inte har något sluttecken och vi kommer till slutet på texten.
                     // I teorin är det inte en träff, men jag vill ändå räkna det som en träff fast som inte är komplett.
-                    result = new State(startPos, lexer.Pos - startPos, true);
+                    result = new State(Type, startPos, lexer.Pos - startPos, true);
                     return true;
                 }
                 else
@@ -67,14 +67,14 @@ namespace SqlCleanup.SqlParser
                         }
                         else if (IsMatchingString(lexer, End))
                         {
-                            result = new State(startPos, lexer.Pos - startPos);
+                            result = new State(Type, startPos, lexer.Pos - startPos);
                             return true;
                         }
                     } while (lexer.Next());
 
                     // Det här är specialfall som uppstår om man inte har något sluttecken och vi kommer till slutet på texten.
                     // I teorin är det inte en träff, men jag vill ändå räkna det som en träff fast som inte är komplett.
-                    result = new State(startPos, lexer.Pos - startPos, true);
+                    result = new State(Type, startPos, lexer.Pos - startPos, true);
                     return true;
                 }
             }

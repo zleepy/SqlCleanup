@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace SqlCleanup.SqlParser
 {
     class NumberRule : Rule
@@ -28,7 +24,7 @@ namespace SqlCleanup.SqlParser
                     break;
             }
 
-            result = new State(startPos, lexer.Pos - startPos);
+            result = new State(Type, startPos, lexer.Pos - startPos);
             return true;
         }
     }

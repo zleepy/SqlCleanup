@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SqlCleanup.Parser;
 
 namespace SqlCleanup.SqlParser
 {
@@ -74,6 +75,12 @@ namespace SqlCleanup.SqlParser
                 //new ExactMatchRule(, TokenType.BitwiseOperatorEquals),
                 //new ExactMatchRule(, TokenType.BitwiseOperatorEquals),
                 new NumberRule(TokenType.Number),
+                new WordRule(TokenType.Word, 
+                    new Tuple<string[], TokenType>(new[] { "ALL", "AND", "ANY", "BETWEEN", "EXISTS", "IN", "LIKE", "NOT", "OR", "SOME" }, TokenType.LogicOperators),
+                    new Tuple<string[], TokenType>(new[] { "ABS", "DATEDIFF", "POWER", "ACOS", "DAY", "RADIANS", "ASIN", "DEGREES", "ROUND", "ATAN", "EXP", "SIGN", "ATN2", "FLOOR", "SIN", "CEILING", "ISNULL", "SQUARE", "COALESCE", "ISNUMERIC", "SQRT", "COS", "LOG", "TAN", "COT", "LOG10", "YEAR", "DATALENGTH", "MONTH", "DATEADD", "NULLIF" }, TokenType.BuiltInFunction),
+                    new Tuple<string[], TokenType>(new[] { "AVG", "MIN", "CHECKSUM_AGG", "OVER", "COUNT", "ROWCOUNT_BIG", "COUNT_BIG", "STDEV", "GROUPING", "STDEVP", "GROUPING_ID", "SUM", "MAX", "VAR", "VARP" }, TokenType.AggregateFunction),
+                    new Tuple<string[], TokenType>(new[] { "ASCII", "NCHAR", "SOUNDEX", "CHAR", "PATINDEX", "SPACE", "CHARINDEX", "QUOTENAME", "STR", "DIFFERENCE", "REPLACE", "STUFF", "LEFT", "REPLICATE", "SUBSTRING", "LEN", "REVERSE", "UNICODE", "LOWER", "RIGHT", "UPPER", "LTRIM", "RTRIM" }, TokenType.StringFunction)),
+
             };
         }
 
@@ -105,6 +112,11 @@ namespace SqlCleanup.SqlParser
             }
 
             return true;
+        }
+
+        public SubArray<char> GetSubArray(int offset, int count)
+        {
+            return new SubArray<char>(text, offset, count);
         }
 
         public List<Token> Tokenize()
@@ -171,5 +183,10 @@ namespace SqlCleanup.SqlParser
         StarEquals,
         DivisionEquals,
         PercentEquals,
+        Word,
+        LogicOperators,
+        BuiltInFunction,
+        AggregateFunction,
+        StringFunction,
     };    
 }
